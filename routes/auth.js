@@ -51,8 +51,8 @@ router.post('/signup', async (req, res) => {
         // Save the new user
         await newUser.save();
 
-        // Send verification email
-        const verificationLink = `http://localhost:3000/auth/verify-email?token=${newUser.verificationToken}&email=${email}`;
+        // Send verification email (using environment-based app URL)
+        const verificationLink = `${process.env.APP_URL}/auth/verify-email?token=${newUser.verificationToken}&email=${email}`;
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: email,
@@ -94,7 +94,7 @@ router.post('/forgot-password', async (req, res) => {
         await user.save();
 
         // Send reset password email
-        const resetLink = `http://localhost:3000/auth/reset-password?token=${user.resetPasswordToken}`;
+        const resetLink = `${process.env.APP_URL}/auth/reset-password?token=${user.resetPasswordToken}`;
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: user.email,

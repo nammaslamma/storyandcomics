@@ -35,11 +35,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: 'mongodb://localhost:27017/StoriesAndComics',
+        mongoUrl: process.env.MONGO_URL,  // Railway MongoDB URL
         collectionName: 'sessions',  // Where to store sessions in MongoDB
         ttl: 60 * 60 * 24,           // 1 day session duration
     }),
-    cookie: { secure: false }  // Set to true if using HTTPS
+    cookie: { secure: process.env.NODE_ENV === 'production' }  // Secure cookie in production only
 }));
 
 // 6. Passport.js middleware for authentication
@@ -105,12 +105,18 @@ app.use('/story', ensureAuthenticated, storyRoutes);
 app.use('/profile', profileRoutes);
 app.use('/auth', authRoutes);
 
-// MongoDB connection
-mongoose.connect('mongodb://localhost:27017/StoriesAndComics')
+// MongoDB connection using the Railway MongoDB URL
+mongoose.connect(process.env.MONGO_URL, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+})
 .then(() => console.log("Connected to MongoDB"))
 .catch(err => console.log("MongoDB connection error:", err));
 
 // 12. Start server
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+const PORT = process.env.PORT || 3000;  // Use dynamic port in production
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
