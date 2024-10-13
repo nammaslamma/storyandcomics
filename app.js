@@ -8,12 +8,18 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const flash = require('connect-flash');
 const MongoStore = require('connect-mongo');  // For MongoDB session storage
+const helmet = require('helmet');  // Import helmet for security
+const path = require('path');  // Import path for static files
 const User = require('./models/User'); // User model
+const Story = require('./models/Story'); // Import your Story model
 require('dotenv').config(); // Load environment variables
 
-const app = express();
+const app = express(); // Initialize express
 
-// 2. Email setup using nodemailer
+// 2. Helmet for basic security
+app.use(helmet());
+
+// 3. Email setup using nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -22,14 +28,14 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// 3. Middleware to handle form data and public files
-app.use(express.static('public'));  // Serve static files
+// 4. Middleware to handle form data and public files
+app.use(express.static(path.join(__dirname, 'public')));  // Serve static files
 app.use(express.urlencoded({ extended: true }));  // Parse form data
 
-// 4. Set EJS as the view engine
+// 5. Set EJS as the view engine
 app.set('view engine', 'ejs');
 
-// 5. Express session with MongoStore (using MongoDB for session storage)
+// 6. Express session with MongoStore (using MongoDB for session storage)
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
@@ -42,18 +48,19 @@ app.use(session({
     cookie: { secure: process.env.NODE_ENV === 'production' }  // Secure cookie in production only
 }));
 
-// 6. Passport.js middleware for authentication
+// 7. Passport.js middleware for authentication
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());  // Flash messages
 
-// 7. Pass flash messages to all templates
+// 8. Pass flash messages and user data to all templates
 app.use((req, res, next) => {
     res.locals.error = req.flash('error');
+    res.locals.user = req.user; // Pass the logged-in user data to templates
     next();
 });
 
-// 8. Passport Local Strategy for authentication
+// 9. Passport Local Strategy for authentication
 passport.use(new LocalStrategy(
     { usernameField: 'email' }, // Use email for authentication
     async (email, password, done) => {
@@ -88,7 +95,7 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-// 9. Protect routes that require authentication
+// 10. Protect routes that require authentication
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -96,7 +103,7 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/auth/login');
 }
 
-// 10. Routes
+// 11. Routes
 const storyRoutes = require('./routes/story');
 const profileRoutes = require('./routes/profile');
 const authRoutes = require('./routes/auth');
@@ -104,6 +111,17 @@ const authRoutes = require('./routes/auth');
 app.use('/story', ensureAuthenticated, storyRoutes);
 app.use('/profile', profileRoutes);
 app.use('/auth', authRoutes);
+
+// Homepage Route
+app.get('/', async (req, res) => {
+    try {
+        const stories = await Story.find().populate('author').sort({ createdAt: -1 }); // Fetch stories from the DB
+        res.render('home', { stories, user: req.user }); // Pass stories and user to the template
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error loading homepage');
+    }
+});
 
 // MongoDB connection using the Railway MongoDB URL
 mongoose.connect(process.env.MONGO_URL, { 

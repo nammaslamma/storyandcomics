@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimbus - Stories and Comics</title>
+    <link rel="stylesheet" href="/public/css/styles.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <header>
+        <h1 style="text-align: center;">Nimbus</h1> <!-- Website title -->
+    </header>
+
+    <!-- Bulletin (editable through HTML) -->
+    <div class="bulletin">
+        <p>Welcome to Nimbus! The platform to share your stories and comics!</p>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/auth/logout">Logout</a></li>
+            <% if (user && user.profilePicture) { %>
+                <li><img src="<%= user.profilePicture %>" alt="Profile Picture" class="profile-pic"></li> <!-- Display profile pic -->
+            <% } else { %>
+                <li><img src="/public/images/default-pic.jpg" alt="Default Profile Picture" class="profile-pic"></li> <!-- Default profile pic -->
+            <% } %>
+        </ul>
+    </nav>
+
+    <!-- Search Bar -->
+    <div class="search-section">
+        <h2>Stories and Comics</h2>
+        <form action="/search" method="GET">
+            <input type="text" name="query" placeholder="Search stories, comics, users..." required>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <!-- Display Stories -->
+    <div class="stories-section">
+        <% if (stories.length > 0) { %>
+            <ul>
+                <% stories.forEach(story => { %>
+                    <li>
+                        <h3><%= story.title %></h3>
+                        <p>by <%= story.author.username %></p>
+                        <a href="/story/<%= story._id %>">Read More</a>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No Stories to Show</p>
+        <% } %>
+    </div>
+
+    <!-- Placeholder for Followed Users -->
+    <div class="followed-section">
+        <h3>People You're Following</h3>
+        <p>Coming Soon...</p> <!-- Placeholder for following feature -->
+    </div>
+</body>
+</html>

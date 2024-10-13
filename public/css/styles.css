@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    padding: 10px;
+    text-align: center;
+}
+
+nav ul {
+    display: flex;
+    justify-content: flex-end;
+    list-style-type: none;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+.search-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.stories-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.stories-section li {
+    margin: 10px 0;
+}
+
+.profile-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
