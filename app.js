@@ -108,9 +108,7 @@ app.use('/auth', authRoutes);
 // MongoDB connection using the Railway MongoDB URL
 mongoose.connect(process.env.MONGO_URL, { 
     useNewUrlParser: true, 
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    useCreateIndex: true
+    useUnifiedTopology: true 
 })
 .then(() => console.log("Connected to MongoDB"))
 .catch(err => console.log("MongoDB connection error:", err));
