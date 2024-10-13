@@ -8,10 +8,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["stories", "comics", "express", "passport", "sharing"],
-  "author": "Your Name",
+  "author": "Naim",
   "license": "ISC",
   "engines": {
-    "node": ">=16.x"
+    "node": ">=22.9.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
