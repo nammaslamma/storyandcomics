@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= story.title %></title>
+</head>
+<body>
+    <h1><%= story.title %></h1>
+    <p><%= story.content %></p>
+
+    <!-- Pagination for chapters -->
+    <% if (currentPage > 1) { %>
+        <a href="/story/view/<%= story._id %>?page=<%= currentPage - 1 %>">Previous</a>
+    <% } %>
+    <% if (currentPage < totalPages) { %>
+        <a href="/story/view/<%= story._id %>?page=<%= currentPage + 1 %>">Next</a>
+    <% } %>
+
+    <p>Chapter <%= currentPage %> of <%= totalPages %></p>
+</body>
+</html>

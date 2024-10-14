@@ -1,17 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>All Stories</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stories</title>
+    <link rel="stylesheet" href="/public/css/styles.css"> <!-- Link to your CSS file -->
 </head>
 <body>
-    <h1>All Stories</h1>
-    <ul>
-        <% stories.forEach(story => { %>
-            <li>
-                <h3><%= story.title %></h3>
-                <p><%= story.content.substring(0, 100) %>... <a href="#">Read more</a></p>
-            </li>
-        <% }) %>
-    </ul>
+    <header>
+        <h1>Stories</h1>
+    </header>
+
+    <div class="stories-section">
+        <% if (stories.length > 0) { %>
+            <ul>
+                <% stories.forEach(story => { %>
+                    <li>
+                        <h3><%= story.title %></h3>
+                        <p>by <%= story.author.username %></p>
+                        <a href="/story/view/<%= story._id %>">Read Story</a> <!-- Link to view the full story -->
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No Stories to Show</p>
+        <% } %>
+    </div>
 </body>
 </html>

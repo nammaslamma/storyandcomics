@@ -1,38 +1,247 @@
+/* Global Styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f4f4f9;
+    color: #333;
 }
 
 header {
-    padding: 10px;
-    text-align: center;
+    padding: 2rem;
+    background-color: #4a90e2;
+    color: #fff;
+    width: 100%;
+}
+
+/* Navigation Bar */
+nav {
+    width: 100%;
+    background-color: #333;
 }
 
 nav ul {
     display: flex;
     justify-content: flex-end;
     list-style-type: none;
+    margin: 0;
+    padding: 1rem;
 }
 
 nav ul li {
-    margin: 0 15px;
+    margin: 0 1.5rem;
 }
 
+nav ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Bulletin Section */
+.bulletin {
+    background-color: #fffae6;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 1.5rem 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+}
+
+/* Search Section */
 .search-section {
-    text-align: center;
-    margin: 20px 0;
+    margin: 2rem 0;
 }
 
-.stories-section ul {
+.search-section input[type="text"] {
+    padding: 0.75rem;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 400px;
+}
+
+.search-section button {
+    padding: 0.75rem 1.5rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.search-section button:hover {
+    background-color: #357ab8;
+}
+
+/* Stories and Comics Section */
+.stories-section, .comics-section {
+    max-width: 90%;
+    margin: 2rem 0;
+}
+
+.stories-section ul, .comics-section ul {
     list-style: none;
     padding: 0;
 }
 
-.stories-section li {
-    margin: 10px 0;
+.stories-section li, .comics-section li {
+    margin: 1rem 0;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
-.profile-pic {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+.stories-section li a, .comics-section li a {
+    color: #4a90e2;
+    text-decoration: none;
+    font-weight: bold;
 }
+
+.stories-section li a:hover, .comics-section li a:hover {
+    text-decoration: underline;
+}
+
+/* Profile Section */
+.profile-pic {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.followed-section, .profile-details {
+    max-width: 90%;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-details h1, .profile-details p {
+    margin: 0.5rem 0;
+}
+
+/* Form Styles */
+form {
+    margin: 2rem 0;
+}
+
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+form input, form textarea, form select {
+    width: 80%;
+    max-width: 400px;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+}
+
+form button[type="submit"] {
+    padding: 0.75rem 1.5rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+form button[type="submit"]:hover {
+    background-color: #357ab8;
+}
+
+/* Responsiveness */
+@media (min-width: 768px) {
+    nav ul {
+        justify-content: space-between;
+    }
+
+    .stories-section li, .comics-section li, .followed-section, .profile-details {
+        max-width: 60%;
+    }
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    nav ul li {
+        margin-bottom: 1rem;
+    }
+} 
+
+/* Button Hover Effects */
+button, a.button {
+    transition: transform 0.3s ease;
+}
+
+button:hover, a.button:hover {
+    transform: scale(1.05);
+}
+
+/* Additional Styling for Consistency */
+.story-view, .comic-view {
+    max-width: 80%;
+    margin: 2rem auto;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    line-height: 1.6;
+}
+
+.story-view h2, .comic-view h2 {
+    margin-bottom: 1.5rem;
+    color: #4a90e2;
+} 
+
+.chapter-counter {
+    margin-top: 2rem;
+    font-size: 1.2rem;
+}
+
+.page-nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.page-nav-buttons button {
+    padding: 0.5rem 1rem;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.page-nav-buttons button:hover {
+    background-color: #357ab8;
+} 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comics</title>
+    <link rel="stylesheet" href="/public/css/styles.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <header>
+        <h1>Comics</h1>
+    </header>
+
+    <div class="comics-section">
+        <% if (comics.length > 0) { %>
+            <ul>
+                <% comics.forEach(comic => { %>
+                    <li>
+                        <h3><%= comic.title %></h3>
+                        <p>by <%= comic.author.username %></p>
+                        <a href="/comic/view/<%= comic._id %>">View Comic</a> <!-- Link to view the full comic -->
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No Comics to Show</p>
+        <% } %>
+    </div>
+</body>
+</html>

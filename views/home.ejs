@@ -19,12 +19,17 @@
     <!-- Navigation Bar -->
     <nav>
         <ul>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/auth/logout">Logout</a></li>
-            <% if (user && user.profilePicture) { %>
-                <li><img src="<%= user.profilePicture %>" alt="Profile Picture" class="profile-pic"></li> <!-- Display profile pic -->
-            <% } else { %>
-                <li><img src="/public/images/default-pic.jpg" alt="Default Profile Picture" class="profile-pic"></li> <!-- Default profile pic -->
+            <% if (user) { %> <!-- Only show these links if the user is logged in -->
+                <li><a href="/profile">Profile</a></li>
+                <li><a href="/auth/logout">Logout</a></li>
+                <% if (user.profilePicture) { %>
+                    <li><img src="<%= user.profilePicture %>" alt="Profile Picture" class="profile-pic"></li> <!-- Display profile pic -->
+                <% } else { %>
+                    <li><img src="/public/images/default-pic.jpg" alt="Default Profile Picture" class="profile-pic"></li> <!-- Default profile pic -->
+                <% } %>
+            <% } else { %> <!-- Show login/signup options when not logged in -->
+                <li><a href="/auth/login">Login</a></li>
+                <li><a href="/auth/signup">Sign Up</a></li>
             <% } %>
         </ul>
     </nav>

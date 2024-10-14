@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Comic</title>
+</head>
+<body>
+    <h1>Submit Your Webcomic</h1>
+    <form action="/comic/submit" method="POST" enctype="multipart/form-data">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required>
+
+        <label for="files">Upload Comic Files:</label>
+        <input type="file" name="files" id="files" multiple required>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

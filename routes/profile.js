@@ -8,7 +8,9 @@ router.get('/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         const stories = await Story.find({ author: user._id }).sort({ createdAt: -1 }); // Get user's stories, most recent first
-        res.render('profile', { user, stories }); // Render profile page
+        const isOwner = req.user && req.user._id.toString() === user._id.toString(); // Check if the logged-in user is the profile owner
+
+        res.render('profile', { user, stories, isOwner }); // Render profile page with 'isOwner' flag
     } catch (err) {
         console.error(err);
         res.status(500).send("Error loading profile");

@@ -4,15 +4,17 @@ const Story = require('../models/Story'); // Import the Story model
 
 // GET route for story submission form
 router.get('/submit', (req, res) => {
-    res.render('submit-story'); // Render the form to submit a story
+    if (!req.user) {
+        return res.redirect('/auth/login'); // Ensure user is logged in
+    }
+    res.render('story-submit'); // Render the form to submit a story
 });
 
 // POST route for submitting a story
 router.post('/submit', async (req, res) => {
     try {
-        // Example mock user if not logged in (replace this with real authentication later)
         if (!req.user) {
-            req.user = { _id: '631f18b4f48d2c2bbf9c01a7', username: 'testuser' }; // Mocked user for testing
+            return res.redirect('/auth/login'); // Ensure user is logged in
         }
 
         const { title, content } = req.body;
@@ -24,7 +26,7 @@ router.post('/submit', async (req, res) => {
         });
 
         await newStory.save(); // Save the story to the database
-        res.redirect('/story'); // Redirect to the list of stories
+        res.redirect(`/profile/${req.user._id}`); // Redirect to the user's profile after submission
     } catch (err) {
         console.error(err);
         res.status(500).send("Error submitting the story");
@@ -42,6 +44,17 @@ router.get('/search', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send("Error searching stories");
+    }
+});
+
+// GET route to display a specific story
+router.get('/view/:id', async (req, res) => {
+    try {
+        const story = await Story.findById(req.params.id).populate('author'); // Fetch story and populate author details
+        res.render('story-view', { story });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error loading story");
     }
 });
 

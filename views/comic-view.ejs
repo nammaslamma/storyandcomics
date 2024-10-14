@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= comic.title %></title>
+</head>
+<body>
+    <h1><%= comic.title %></h1>
+    <% comic.pages.forEach(page => { %>
+        <img src="<%= page.url %>" alt="Comic Page">
+    <% }) %>
+
+    <!-- Pagination for comic pages -->
+    <% if (currentPage > 1) { %>
+        <a href="/comic/view/<%= comic._id %>?page=<%= currentPage - 1 %>">Previous</a>
+    <% } %>
+    <% if (currentPage < totalPages) { %>
+        <a href="/comic/view/<%= comic._id %>?page=<%= currentPage + 1 %>">Next</a>
+    <% } %>
+
+    <p>Page <%= currentPage %> of <%= totalPages %></p>
+</body>
+</html>

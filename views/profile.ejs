@@ -1,18 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= user.username %>'s Profile</title>
 </head>
 <body>
     <h1><%= user.username %>'s Profile</h1>
     <p><%= user.bio %></p>
 
+    <% if (isOwner) { %> 
+        <!-- Show edit button if the logged-in user is the profile owner -->
+        <a href="/profile/edit/<%= user._id %>">Edit Profile</a>
+        <a href="/story/submit">Create Story</a> <!-- Create Story Button -->
+    <% } %>
+
     <h2>Stories by <%= user.username %>:</h2>
     <ul>
         <% stories.forEach(story => { %>
             <li>
                 <h3><%= story.title %></h3>
-                <p><%= story.content.substring(0, 100) %>... <a href="#">Read more</a></p>
+                <p><%= story.content.substring(0, 100) %>... <a href="/story/view/<%= story._id %>">Read more</a></p>
             </li>
         <% }) %>
     </ul>

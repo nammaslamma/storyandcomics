@@ -7,30 +7,30 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const flash = require('connect-flash');
-const MongoStore = require('connect-mongo');  // For MongoDB session storage
-const helmet = require('helmet');  // Import helmet for security
-const path = require('path');  // Import path for static files
-const User = require('./models/User'); // User model
-const Story = require('./models/Story'); // Import your Story model
-require('dotenv').config(); // Load environment variables
+const MongoStore = require('connect-mongo');
+const helmet = require('helmet');
+const path = require('path');
+const User = require('./models/User');
+const Story = require('./models/Story');
+require('dotenv').config();
 
-const app = express(); // Initialize express
+const app = express();
 
-// 2. Helmet for basic security
+// 2. Use Helmet for security
 app.use(helmet());
 
 // 3. Email setup using nodemailer
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, // Email from .env
-        pass: process.env.EMAIL_PASS  // Password from .env
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
 // 4. Middleware to handle form data and public files
-app.use(express.static(path.join(__dirname, 'public')));  // Serve static files
-app.use(express.urlencoded({ extended: true }));  // Parse form data
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
 
 // 5. Set EJS as the view engine
 app.set('view engine', 'ejs');
@@ -41,28 +41,28 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URL,  // Railway MongoDB URL
-        collectionName: 'sessions',  // Where to store sessions in MongoDB
-        ttl: 60 * 60 * 24,           // 1 day session duration
+        mongoUrl: process.env.MONGO_URL,
+        collectionName: 'sessions',
+        ttl: 60 * 60 * 24
     }),
-    cookie: { secure: process.env.NODE_ENV === 'production' }  // Secure cookie in production only
+    cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
 // 7. Passport.js middleware for authentication
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());  // Flash messages
+app.use(flash());
 
 // 8. Pass flash messages and user data to all templates
 app.use((req, res, next) => {
     res.locals.error = req.flash('error');
-    res.locals.user = req.user; // Pass the logged-in user data to templates
+    res.locals.user = req.user || null; // Pass the logged-in user data to templates
     next();
 });
 
 // 9. Passport Local Strategy for authentication
 passport.use(new LocalStrategy(
-    { usernameField: 'email' }, // Use email for authentication
+    { usernameField: 'email' },
     async (email, password, done) => {
         try {
             const user = await User.findOne({ email });
@@ -115,8 +115,8 @@ app.use('/auth', authRoutes);
 // Homepage Route
 app.get('/', async (req, res) => {
     try {
-        const stories = await Story.find().populate('author').sort({ createdAt: -1 }); // Fetch stories from the DB
-        res.render('home', { stories, user: req.user }); // Pass stories and user to the template
+        const stories = await Story.find().populate('author').sort({ createdAt: -1 });
+        res.render('home', { stories, user: req.user });
     } catch (err) {
         console.error(err);
         res.status(500).send('Error loading homepage');
@@ -132,7 +132,7 @@ mongoose.connect(process.env.MONGO_URL, {
 .catch(err => console.log("MongoDB connection error:", err));
 
 // 12. Start server
-const PORT = process.env.PORT || 3000;  // Use dynamic port in production
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

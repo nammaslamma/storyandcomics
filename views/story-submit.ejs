@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Story</title>
+</head>
+<body>
+    <h1>Submit Your Story</h1>
+    <form action="/story/submit" method="POST">
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required>
+
+        <label for="content">Content:</label>
+        <textarea name="content" id="content" rows="10" required></textarea>
+
+        <label for="type">Story Type:</label>
+        <select name="type" id="type">
+            <option value="written">Written Story</option>
+            <option value="comic">Webcomic</option>
+        </select>
+
+        <!-- File upload for comics -->
+        <div id="comic-upload" style="display: none;">
+            <label for="comicFile">Upload Comic Files:</label>
+            <input type="file" name="comicFile" id="comicFile" multiple>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        // Toggle comic upload field based on selected story type
+        document.getElementById('type').addEventListener('change', function() {
+            const comicUpload = document.getElementById('comic-upload');
+            if (this.value === 'comic') {
+                comicUpload.style.display = 'block';
+            } else {
+                comicUpload.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
