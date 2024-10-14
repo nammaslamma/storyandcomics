@@ -3,29 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Nimbus</title>
+    <link rel="stylesheet" href="/public/css/styles.css">
 </head>
 <body>
-    <h1>Login</h1>
+    <header>
+        <h1>Login</h1>
+    </header>
 
+    <!-- Flash Messages -->
     <% if (error) { %>
-        <p style="color: red;"><%= error %></p> <!-- Error message (if login fails) -->
+        <div class="flash-message error">
+            <p><%= error %></p>
+        </div>
     <% } %>
 
     <% if (success) { %>
-        <p style="color: green;"><%= success %></p>
+        <div class="flash-message success">
+            <p><%= success %></p>
+        </div>
     <% } %>
 
-    <form action="/auth/login" method="POST">
-        <label for="email">Email:</label>
-        <input type="email" name="email" required>
-        <br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
-    </form>
+    <!-- Login Form -->
+    <div class="form-container">
+        <form action="/auth/login" method="POST">
+            <label for="email">Email:</label>
+            <input type="email" name="email" required>
 
-    <p><a href="/auth/forgot-password">Forgot Password?</a></p> <!-- Link to Forgot Password page -->
+            <label for="password">Password:</label>
+            <input type="password" name="password" required>
+
+            <button type="submit">Login</button>
+        </form>
+
+        <p class="forgot-password-link">
+            <a href="/auth/forgot-password">Forgot Password?</a>
+        </p>
+    </div>
+
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 2rem;
+            width: 100%;
+            background-color: #4a90e2;
+            color: #fff;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .flash-message {
+            max-width: 90%;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        .flash-message.error {
+            background-color: #ffdddd;
+            color: #d8000c;
+        }
+
+        .flash-message.success {
+            background-color: #ddffdd;
+            color: #4f8a10;
+        }
+
+        .form-container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        input {
+            width: calc(100% - 1.5rem);
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #357ab8;
+            transform: scale(1.05);
+        }
+
+        .forgot-password-link {
+            margin-top: 1rem;
+        }
+
+        .forgot-password-link a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .forgot-password-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .form-container {
+                width: 90%;
+            }
+        }
+    </style>
 </body>
 </html>

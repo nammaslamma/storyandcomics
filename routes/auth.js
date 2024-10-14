@@ -18,7 +18,12 @@ const transporter = nodemailer.createTransport({
 
 // Sign-Up form (GET)
 router.get('/signup', (req, res) => {
-    res.render('signup', { error: req.flash('error'), success: req.flash('success') }); // Render the signup view with flash messages
+    res.render('signup', { error: req.flash('error'), success: req.flash('success') });
+});
+
+// Sign-Up Success (GET)
+router.get('/signup-success', (req, res) => {
+    res.render('signup-success');
 });
 
 // Sign-Up (POST) - Register a new user
@@ -62,8 +67,7 @@ router.post('/signup', async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
-        req.flash('success', 'Verification email sent. Please check your inbox.');
-        res.redirect('/auth/login'); // Redirect to login page
+        res.redirect('/auth/signup-success'); // Redirect to signup success page
 
     } catch (err) {
         console.error(err);
@@ -74,7 +78,12 @@ router.post('/signup', async (req, res) => {
 
 // Forgot Password (GET) - Render forgot password form
 router.get('/forgot-password', (req, res) => {
-    res.render('forgot-password', { error: req.flash('error'), success: req.flash('success') }); // Render forgot-password view with flash messages
+    res.render('forgot-password', { error: req.flash('error'), success: req.flash('success') });
+});
+
+// Login form (GET)
+router.get('/login', (req, res) => {
+    res.render('login', { error: req.flash('error'), success: req.flash('success') });
 });
 
 // Forgot Password (POST) - Send reset password link
