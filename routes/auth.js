@@ -3,9 +3,9 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const nodemailer = require('nodemailer');
-const crypto = require('crypto'); 
+const crypto = require('crypto');
 const router = express.Router();
-require('dotenv').config(); 
+require('dotenv').config();
 
 // Email setup
 const transporter = nodemailer.createTransport({
@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 
 // Sign-Up form (GET)
 router.get('/signup', (req, res) => {
-    res.render('signup'); // Render the signup.ejs view
+    res.render('signup', { error: req.flash('error'), success: req.flash('success') }); // Render the signup view with flash messages
 });
 
 // Sign-Up (POST) - Register a new user
@@ -63,7 +63,7 @@ router.post('/signup', async (req, res) => {
         await transporter.sendMail(mailOptions);
 
         req.flash('success', 'Verification email sent. Please check your inbox.');
-        res.redirect('/auth/verify'); // Redirect to verification page
+        res.redirect('/auth/login'); // Redirect to login page
 
     } catch (err) {
         console.error(err);
@@ -74,7 +74,7 @@ router.post('/signup', async (req, res) => {
 
 // Forgot Password (GET) - Render forgot password form
 router.get('/forgot-password', (req, res) => {
-    res.render('forgot-password'); // Render forgot-password.ejs
+    res.render('forgot-password', { error: req.flash('error'), success: req.flash('success') }); // Render forgot-password view with flash messages
 });
 
 // Forgot Password (POST) - Send reset password link
@@ -127,7 +127,7 @@ router.get('/reset-password', async (req, res) => {
             return res.redirect('/auth/forgot-password');
         }
 
-        res.render('reset-password', { token });
+        res.render('reset-password', { token, error: req.flash('error'), success: req.flash('success') });
     } catch (err) {
         console.error(err);
         req.flash('error', 'An error occurred.');
@@ -137,8 +137,7 @@ router.get('/reset-password', async (req, res) => {
 
 // Reset Password (POST) - Update the password
 router.post('/reset-password', async (req, res) => {
-    const { token } = req.body;
-    const { password } = req.body;
+    const { token, password } = req.body;
     try {
         const user = await User.findOne({
             resetPasswordToken: token,
@@ -172,7 +171,7 @@ router.get('/verify-email', async (req, res) => {
 
     try {
         const user = await User.findOne({
-            email, 
+            email,
             verificationToken: token,
             verificationTokenExpires: { $gt: Date.now() } // Token is not expired
         });

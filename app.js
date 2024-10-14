@@ -17,7 +17,9 @@ require('dotenv').config();
 const app = express();
 
 // 2. Use Helmet for security
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: false, // Optional: To avoid CSP issues while using inline scripts/styles
+}));
 
 // 3. Email setup using nodemailer
 const transporter = nodemailer.createTransport({
@@ -28,7 +30,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// 4. Middleware to handle form data and public files
+// 4. Middleware to handle form data and serve public files
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,9 +45,13 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URL,
         collectionName: 'sessions',
-        ttl: 60 * 60 * 24
+        ttl: 60 * 60 * 24 // 1 day session duration
     }),
-    cookie: { secure: process.env.NODE_ENV === 'production' }
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 1000 // 1 day in milliseconds
+    }
 }));
 
 // 7. Passport.js middleware for authentication
@@ -56,7 +62,8 @@ app.use(flash());
 // 8. Pass flash messages and user data to all templates
 app.use((req, res, next) => {
     res.locals.error = req.flash('error');
-    res.locals.user = req.user || null; // Pass the logged-in user data to templates
+    res.locals.success = req.flash('success');
+    res.locals.user = req.user || null;
     next();
 });
 
@@ -67,11 +74,14 @@ passport.use(new LocalStrategy(
         try {
             const user = await User.findOne({ email });
             if (!user) {
-                return done(null, false, { message: 'Incorrect email.' });
+                return done(null, false, { message: 'Incorrect email or password.' });
+            }
+            if (!user.isVerified) {
+                return done(null, false, { message: 'Please verify your email before logging in.' });
             }
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                return done(null, false, { message: 'Incorrect password.' });
+                return done(null, false, { message: 'Incorrect email or password.' });
             }
             return done(null, user);
         } catch (err) {
@@ -100,6 +110,7 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
+    req.flash('error', 'Please log in to view this resource');
     res.redirect('/auth/login');
 }
 
@@ -119,20 +130,21 @@ app.get('/', async (req, res) => {
         res.render('home', { stories, user: req.user });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Error loading homepage');
+        req.flash('error', 'An error occurred while loading the homepage.');
+        res.redirect('/auth/login');
     }
 });
 
-// MongoDB connection using the Railway MongoDB URL
-mongoose.connect(process.env.MONGO_URL, { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
+// 12. MongoDB connection using the Railway MongoDB URL
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 })
-.then(() => console.log("Connected to MongoDB"))
-.catch(err => console.log("MongoDB connection error:", err));
+    .then(() => console.log("Connected to MongoDB"))
+    .catch(err => console.log("MongoDB connection error:", err));
 
-// 12. Start server
-const PORT = process.env.PORT || 3000;
+// 13. Start server
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
