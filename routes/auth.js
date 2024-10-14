@@ -76,14 +76,21 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-// Forgot Password (GET) - Render forgot password form
-router.get('/forgot-password', (req, res) => {
-    res.render('forgot-password', { error: req.flash('error'), success: req.flash('success') });
-});
-
 // Login form (GET)
 router.get('/login', (req, res) => {
     res.render('login', { error: req.flash('error'), success: req.flash('success') });
+});
+
+// Login (POST) - Handle user login
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/', // Redirect to home page upon successful login
+    failureRedirect: '/auth/login', // Redirect back to login page upon failure
+    failureFlash: true // Show error message
+}));
+
+// Forgot Password (GET) - Render forgot password form
+router.get('/forgot-password', (req, res) => {
+    res.render('forgot-password', { error: req.flash('error'), success: req.flash('success') });
 });
 
 // Forgot Password (POST) - Send reset password link
