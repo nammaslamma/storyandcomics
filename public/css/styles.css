@@ -1,17 +1,17 @@
 /* Global Styles */
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-weight: normal;
     margin: 0;
     padding: 0;
     text-align: center;
+    background-color: #f4f4f9;
+    color: #333;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f4f4f9;
-    color: #333;
 }
 
+/* Header */
 header {
     padding: 2rem;
     background-color: #4a90e2;
@@ -78,11 +78,12 @@ nav ul li a:hover {
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .search-section button:hover {
     background-color: #357ab8;
+    transform: scale(1.05);
 }
 
 /* Stories and Comics Section */
@@ -168,11 +169,12 @@ form button[type="submit"] {
     border-radius: 5px;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 form button[type="submit"]:hover {
     background-color: #357ab8;
+    transform: scale(1.05);
 }
 
 /* Responsiveness */
@@ -220,7 +222,7 @@ button:hover, a.button:hover {
 .story-view h2, .comic-view h2 {
     margin-bottom: 1.5rem;
     color: #4a90e2;
-} 
+}
 
 .chapter-counter {
     margin-top: 2rem;
@@ -244,4 +246,4 @@ button:hover, a.button:hover {
 
 .page-nav-buttons button:hover {
     background-color: #357ab8;
-} 
+}

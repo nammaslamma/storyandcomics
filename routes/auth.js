@@ -83,12 +83,20 @@ router.get('/login', (req, res) => {
 
 // Login (POST) - Handle user login
 router.post('/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+    passport.authenticate('local', async (err, user, info) => {
         if (err) {
             return next(err);
         }
         if (!user) {
             req.flash('error', 'Invalid email or password.');
+            return res.redirect('/auth/login');
+        }
+        if (user.isLocked) {
+            req.flash('error', 'Your account is locked. Please contact support.');
+            return res.redirect('/auth/login');
+        }
+        if (!user.isVerified) {
+            req.flash('error', 'Your email is not verified. Please check your inbox.');
             return res.redirect('/auth/login');
         }
         req.logIn(user, (err) => {
