@@ -120,7 +120,7 @@ const profileRoutes = require('./routes/profile');
 const authRoutes = require('./routes/auth');
 
 app.use('/story', ensureAuthenticated, storyRoutes);
-app.use('/profile', profileRoutes);
+app.use('/profile', ensureAuthenticated, profileRoutes); // Ensure authenticated for profiles
 app.use('/auth', authRoutes);
 
 // Homepage Route

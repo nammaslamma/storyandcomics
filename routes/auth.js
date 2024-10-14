@@ -82,11 +82,24 @@ router.get('/login', (req, res) => {
 });
 
 // Login (POST) - Handle user login
-router.post('/login', passport.authenticate('local', {
-    successRedirect: '/', // Redirect to home page upon successful login
-    failureRedirect: '/auth/login', // Redirect back to login page upon failure
-    failureFlash: true // Show error message
-}));
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            req.flash('error', 'Invalid email or password.');
+            return res.redirect('/auth/login');
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                return next(err);
+            }
+            req.flash('success', 'You are now logged in!');
+            return res.redirect('/'); // Redirect to home page upon successful login
+        });
+    })(req, res, next);
+});
 
 // Forgot Password (GET) - Render forgot password form
 router.get('/forgot-password', (req, res) => {
