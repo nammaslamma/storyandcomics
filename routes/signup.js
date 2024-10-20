@@ -1,43 +1,81 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
+const User = require('../models/User');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const User = require('../models/User'); // Assuming you have a User model in the models folder
+require('dotenv').config();
 
-// Sign-up Route
+// Email setup
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+// Sign-Up form (GET)
+router.get('/signup', (req, res) => {
+    res.render('signup', { error: req.flash('error'), success: req.flash('success') });
+});
+
+// Sign-Up Success (GET)
+router.get('/signup-success', (req, res) => {
+    res.render('signup-success');
+});
+
+// Sign-Up (POST) - Register a new user
 router.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
-
-    // Validation - Ensure all fields are filled
-    if (!username || !email || !password) {
-        return res.render('signup', { error: 'Please fill in all fields.' });
-    }
 
     try {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.render('signup', { error: 'Email is already registered. Please use a different email.' });
+            req.flash('error', 'Email is already registered.');
+            return res.redirect('/auth/signup');
         }
 
-        // Hash the password
+        // Hash the password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create new user in the database
+        // Create new user
         const newUser = new User({
-            username: username,
-            email: email,
-            password: hashedPassword
+            username,
+            email,
+            password: hashedPassword,
+            isVerified: false, // User is unverified initially
+            verificationToken: crypto.randomBytes(32).toString('hex'),
+            verificationTokenExpires: Date.now() + 24 * 60 * 60 * 1000 // 24 hours expiry
         });
 
-        // Save user to the database
+        // Save the new user
         await newUser.save();
 
-        // Send success flash message and redirect to login
-        return res.render('signup', { success: 'Account created successfully. Please log in.' });
+        // Send verification email (using environment-based app URL)
+        const verificationLink = `${process.env.APP_URL}/auth/verify-email?token=${newUser.verificationToken}&email=${email}`;
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Verify Your Email',
+            text: `Hello ${username}, please verify your email by clicking this link: ${verificationLink}`
+        };
 
-    } catch (error) {
-        console.error('Error during signup:', error);
-        return res.render('signup', { error: 'Something went wrong. Please try again.' });
+        try {
+            await transporter.sendMail(mailOptions);
+            // If email is sent successfully, redirect to signup-success
+            return res.redirect('/auth/signup-success');
+        } catch (emailError) {
+            console.error('Error sending email:', emailError);
+            req.flash('error', 'An error occurred while sending verification email. Please try again.');
+            return res.redirect('/auth/signup');
+        }
+
+    } catch (err) {
+        console.error('Error during sign-up process:', err);
+        req.flash('error', 'An unexpected error occurred during sign-up. Please try again.');
+        return res.redirect('/auth/signup');
     }
 });
 
