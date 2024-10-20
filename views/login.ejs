@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Nimbus</title>
-    <link rel="stylesheet" href="/public/css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Updated CSS path -->
 </head>
 <body>
     <header>
@@ -12,13 +12,13 @@
     </header>
 
     <!-- Flash Messages -->
-    <% if (error) { %>
+    <% if (error && error.length) { %> <!-- Added length check -->
         <div class="flash-message error">
             <p><%= error %></p>
         </div>
     <% } %>
 
-    <% if (success) { %>
+    <% if (success && success.length) { %> <!-- Added length check -->
         <div class="flash-message success">
             <p><%= success %></p>
         </div>
@@ -31,7 +31,7 @@
             <input type="email" name="email" id="email" required>
 
             <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required>
+            <input type="password" name="password" id="password" required minlength="6"> <!-- Added minlength -->
 
             <button type="submit">Login</button>
         </form>
@@ -120,6 +120,11 @@
         button:hover {
             background-color: #357ab8;
             transform: scale(1.05);
+        }
+
+        button:focus {
+            outline: none;
+            box-shadow: 0 0 3px #357ab8; /* Added focus state */
         }
 
         .forgot-password-link {
